@@ -1,0 +1,39 @@
+<div>
+
+    <h1> HOME PAGE </h1>
+
+
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#top-nav .navbar-nav').find('li.active').removeClass('active');
+        $('#home-nav').addClass('active');
+    });
+
+    function post(){
+
+        var formData = "username=boop&password=blooop";
+
+        $.ajax({
+            url : "/login",
+            type: "POST",
+            data : formData,
+
+            success: function(data, textStatus, jqXHR)
+            {
+                alert("/ConfirmCalibration post completed");
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert("FCUK YOU");
+            }
+        });
+
+
+    }
+
+
+</script>

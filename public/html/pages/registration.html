@@ -1,0 +1,263 @@
+<div style="border-style: dashed" class="container text-center">
+
+
+    <h1 style="color:white"> Register User </h1>
+
+
+
+   <!-- <form action="/request-registration" method="post"> -->
+        <div class="row"><div class="col-sm-1"></div><div class="custom-label col-sm-3">Username</div><input id="user-name-input" class="col-sm-4" type="text" name="username" value="{{.user}}"></div>
+        <div class="row"><div class="col-sm-1"></div><div class="custom-label col-sm-3">Email Address</div><input id="email-input" class="col-sm-4" type="text" name="email" value="{{.email}}"></div>
+        <div class="row"><div class="col-sm-1"></div><div class="custom-label col-sm-3">Password</div><input id="password-input" class="col-sm-4" type="password" name="password"></div>
+        <div class="row"><div class="col-sm-1"></div><div class="custom-label col-sm-3">Confirm Password</div><input id="confirm-password-input" class="col-sm-4" type="password" name="confirm-password"></div>
+        <br>
+
+        <div class="form-check">
+            <input id="tos-input" type="checkbox" class="form-check-input" id="agreeToTerms">
+            <label style="color:white" class="form-check-label" for="agreeToTerms">I have read the <a style="font-size: 16px" href="termsofservice">Terms of Service</a></label>
+        </div>
+
+        <br>
+        <input id="submit-registration" style="margin-bottom: 20px" class="btn btn-primary" type="submit" value="Register">
+    </form>
+
+</div>
+
+
+<!-- Modal -->
+<div id="formValidationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="modal-title" class="modal-title"></h4>
+            </div>
+            <div id="modal-description" class="modal-body">
+                <p></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<style>
+
+
+    .custom-label{
+        color: white;
+        font-size : 24px;
+        padding-top: 8px;
+
+    }
+
+    input[type=checkbox], select {
+
+        left: 20px;
+        padding: 5px 28px;
+        font-size: 20px;
+        border-radius: 20px;
+    }
+
+    input[type=submit], select {
+
+        padding: 5px 28px;
+        font-size: 20px;
+        border-radius: 10px;
+    }
+
+    input[type=text], select {
+
+        padding: 0px 20px;
+        margin: 6px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 26px;
+    }
+
+    input[type=password], select {
+
+        padding: 0px 20px;
+        margin: 6px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 26px;
+    }
+
+
+
+</style>
+
+
+<script>
+
+
+
+    $('#submit-registration').click(function(){
+
+        var usercheck = $('#user-name-input').val();
+        var emailcheck = $('#email-input').val();
+        var pwdcheck = $('#password-input').val();
+        var confirmpwdcheck = $('#confirm-password-input').val();
+        var toscheck = $( "input[type=checkbox][id=tos-input]:checked" ).val();
+
+        var modal = '#formValidationModal';
+
+
+        var userValidation = validateUserName(usercheck);
+
+        if(userValidation != "valid"){
+
+
+            $(modal).find('#modal-title').html("Invalid Username Entry");
+            $(modal).find('#modal-description').html(userValidation);
+            $(modal).modal('show');
+            return;
+        }
+
+        var emailValidation = validateEmailAddress(emailcheck);
+
+        if(emailValidation != "valid"){
+
+
+            $(modal).find('#modal-title').html("Invalid Email Address Entry");
+            $(modal).find('#modal-description').html(emailValidation);
+            $(modal).modal('show');
+            return;
+        }
+
+        var passwordVerification = validatePassword(pwdcheck, confirmpwdcheck);
+
+        if(passwordVerification != "valid"){
+
+
+            $(modal).find('#modal-title').html("Invalid Password Entry");
+            $(modal).find('#modal-description').html(passwordVerification);
+            $(modal).modal('show');
+            return;
+        }
+
+
+        var tosValidation = validateToS(toscheck);
+        if(tosValidation != "valid"){
+
+
+            $(modal).find('#modal-title').html("Terms of Service");
+            $(modal).find('#modal-description').html(tosValidation);
+            $(modal).modal('show');
+            return;
+        }
+
+        submitRegistration(usercheck, pwdcheck, emailcheck);
+
+
+    });
+
+    function submitRegistration(username, pwd, emailaddress){
+
+        data = "user="+username+"&pwd="+pwd+"&email="+emailaddress;
+
+        $.ajax({
+            type: "POST",
+            url: "/request-registration",
+            data: data,
+            success: function(data, textStatus, jqXHR)
+            {
+                window.location.href = "/";
+
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                var modal = '#formValidationModal';
+                var error =  jqXHR.responseJSON.type;
+
+                if(error == "registrationError"){
+
+
+                    var reason = jqXHR.responseJSON.reason;
+
+
+                    $(modal).find('#modal-title').html("Registration Error");
+                    $(modal).find('#modal-description').html(reason);
+                    $(modal).modal('show');
+
+                }else{
+
+                    $(modal).find('#modal-title').html("Server Error");
+                    $(modal).find('#modal-description').html("The Registration failed due to an unknown error.  Please try again later.");
+                    $(modal).modal('show');
+
+
+                }
+
+
+            }
+        });
+
+    }
+
+    function validateToS(tosCheck){
+
+        if(tosCheck == "on"){
+            return "valid";
+        }else{
+            return "You must read and agree to the Terms of Service to register an account";
+        }
+
+
+    }
+
+
+    function validateUserName(userName){
+
+        var check =  /^[A-Za-z]\w{7,14}$/;
+
+        if(!userName.match(check)){
+            return "The Username must be 7-16 characters in length [characters, numbers and underscores] and the first character must be a letter";
+        }
+
+        return "valid";
+
+    }
+
+
+    function validateEmailAddress(emailAddress){
+
+        var check = emailAddress.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+
+        if(check == null) {
+           return "The Email Address entered is invalid";
+        }else{
+            return "valid";
+        }
+    }
+
+    function validatePassword(password, passwordConfirmation){
+
+        if(password != passwordConfirmation){
+            return "Password fields do not match";
+        }
+
+        var check =  /^[A-Za-z]\w{7,14}$/;
+
+        if(!password.match(check)){
+           return "The password must be 7-16 characters in length [characters, numbers and underscores] and the first character must be a letter";
+        }
+
+        return "valid";
+
+
+    }
+
+
+</script>
