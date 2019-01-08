@@ -62,7 +62,7 @@ func SetupDB(dbName string) *sql.DB {
 	db, err := sql.Open("sqlite3", dbName)
 
 	if err != nil{
-		fmt.Println("WHAT ERROR", err)
+		fmt.Println("Error Opening SQLITE DB", err)
 	}
 
 	return db
@@ -148,7 +148,7 @@ func main() {
 
 	m := martini.Classic()
   
-	db := SetupDB("data.db")
+	db := SetupDB("/root/database/data.db")
   
  	//e := auth.AuthEngine{db}
   	m.Map(db)
