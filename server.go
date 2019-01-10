@@ -180,10 +180,6 @@ func main() {
 		password, _ := lcrypto.Decrypt(params["password"])
 
 
-
-		fmt.Println(username, password)
-		
-
 		var bytePW = []byte(password)
 		user := authorization.User{username, password, "temp"}
 
@@ -195,15 +191,11 @@ func main() {
 
 			if isAuthorized{
 
-				//get character??
 
 				char, err := GetCharacter(accountID, db)
 
 				if err != nil {
 					r.JSON(http.StatusOK, map[string]string{
-						"user": user.Username,
-						"password": user.Password,
-						"id": strconv.Itoa(accountID),
 						"status":"nocharacter",
 					})
 				}else{
@@ -219,12 +211,7 @@ func main() {
 						"id": strconv.Itoa(accountID),
 						"status":"ok",
 					})
-
-
 				}
-
-
-
 			}else{
 				r.JSON(http.StatusOK, map[string]string{
 					"status":"not-authorized",
@@ -278,11 +265,6 @@ func main() {
 		r.HTML(http.StatusOK, "html/pages/account", newmap)
 
 	})
-
-
-	
-
-
 
 	m.Get("/features", func(r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter) {
 
@@ -340,8 +322,6 @@ func main() {
 		//collect data from form
 		username := req.FormValue("user")
 		password := req.FormValue("pwd")
-
-		fmt.Println(username, password)
 
 
 		user := authorization.User{username, password, "temp"}
