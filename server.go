@@ -13,6 +13,7 @@ import (
 	"github.com/martini-contrib/render"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/LachlanMac/authorization"
+	"github.com/LachlanMac/lcrypto"
 )
 
 type UserSession struct {
@@ -175,13 +176,18 @@ func main() {
 
 	m.Get("/authserver/auth/:user/:password", func(db *sql.DB, r render.Render, params martini.Params, req *http.Request) {
 
-		var username = params["user"]
-		var password = params["password"]
+		username, _ := lcrypto.Decrypt(params["user"])
+		password, _ := lcrypto.Decrypt(params["password"])
+
+
+
+		fmt.Println(username, password)
+		
+
 		var bytePW = []byte(password)
 		user := authorization.User{username, password, "temp"}
 
 		userExists, accountID := authorization.UserExists(user, db)
-
 
 		if userExists{
 
