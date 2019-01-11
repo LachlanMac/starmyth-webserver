@@ -253,17 +253,27 @@ func main() {
 
 			fmt.Println("AUTHORIZATION STATUS = ", isAuthorized)
 
-			userSession := &UserSession{username,true, authorization.GetUniqueIdentifier(username)}
+			if isAuthorized {
 
-			session, _ := store.Get(req, "cookie-name")
+				userSession := &UserSession{username, true, authorization.GetUniqueIdentifier(username)}
 
-			session.Values["user"] = userSession
+				session, _ := store.Get(req, "cookie-name")
 
-			err := session.Save(req, w)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
+				session.Values["user"] = userSession
+				err := session.Save(req, w)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			}else{
+
+				r.JSON(http.StatusInternalServerError,map[string]string{
+					"type":   "loginError",
+					"reason": "not authorized",
+				})
+
 			}
+
 		}
 	})
 
