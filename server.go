@@ -22,14 +22,6 @@ type UserSession struct {
 	UniqueID string
 }
 
-type Character struct {
-	ID       int
-	Name     string
-	X        float64
-	Y        float64
-	SectorID int
-	Model    int
-}
 
 var(
 	key = []byte("super-secret-key")
@@ -69,45 +61,6 @@ func SetupDB(dbName string) *sql.DB {
 	return db
 }
 
-func AddUser(user authorization.User, db *sql.DB) error{
-
-	sqlStatement := `INSERT INTO users (user_name, email, password)VALUES ($1, $2, $3)`
-	_, err := db.Exec(sqlStatement, user.Username, user.Email, user.Password)
-
-	return err
-}
-
-
-func GetCharacter(account_id int, db *sql.DB) (Character, error){
-
-
-	var id int
-	var name string
-	var x float64
-	var y float64
-	var secId int
-	var model int
-
-	emptyChar := Character{}
-
-	sqlStatement := `SELECT character_id, character_name, character_model, x_pos, y_pos, sector_id FROM characters WHERE account_id=$1`
-
-	row := db.QueryRow(sqlStatement, account_id)
-
-	err := row.Scan(&id, &name, &model, &x, &y, &secId)
-
-	if err == sql.ErrNoRows {
-		return emptyChar, err
-	}else if err != nil {
-		fmt.Println("Uncaught Server error when attempting to Authorize a User", err)
-		return emptyChar, err
-	}else{
-
-		char := Character{id, name, x, y, secId, model}
-		return char, nil
-	}
-
-}
 
 
 func isVerified(req *http.Request, w http.ResponseWriter) bool{
@@ -150,12 +103,11 @@ func main() {
 	m := martini.Classic()
   
 	db := SetupDB("/root/database/data.db")
-  
- 	//e := auth.AuthEngine{db}
+
   	m.Map(db)
 
   	helpers := template.FuncMap{
-	"print": fmt.Println,
+		"print": fmt.Println,
 	}
 
 	//Setup martini options
@@ -174,58 +126,6 @@ func main() {
 		}
 	})
 
-	m.Get("/authserver/auth/:user/:password", func(db *sql.DB, r render.Render, params martini.Params, req *http.Request) {
-
-		username, _ := lcrypto.Decrypt(params["user"])
-		password, _ := lcrypto.Decrypt(params["password"])
-
-
-		var bytePW = []byte(password)
-		user := authorization.User{username, password, "temp"}
-
-		userExists, accountID := authorization.UserExists(user, db)
-
-		if userExists{
-
-			isAuthorized := authorization.Authorize(accountID, bytePW,  db)
-
-			if isAuthorized{
-
-
-				char, err := GetCharacter(accountID, db)
-
-				if err != nil {
-					r.JSON(http.StatusOK, map[string]string{
-						"status":"nocharacter",
-					})
-				}else{
-
-					r.JSON(http.StatusOK, map[string]string{
-						"name": char.Name,
-						"charID": strconv.Itoa(char.ID),
-						"sector":strconv.Itoa(char.SectorID),
-						"x":strconv.FormatFloat(char.X, 'f', 4, 32),
-						"y":strconv.FormatFloat(char.Y, 'f', 4, 32),
-						"model":strconv.Itoa(char.Model),
-						"user": user.Username,
-						"id": strconv.Itoa(accountID),
-						"status":"ok",
-					})
-				}
-			}else{
-				r.JSON(http.StatusOK, map[string]string{
-					"status":"not-authorized",
-				})
-			}
-
-		}else{
-		
-			r.JSON(http.StatusOK, map[string]string{
-				"status":"invalid-user",
-			})
-
-		}
-	})
 
 
 
@@ -407,7 +307,7 @@ func main() {
 			})
 
 		}else{
-			err := AddUser(user, db)
+			err := authorization.AddUser(user, db)
 
 			if err != nil{
 				r.JSON(http.StatusInternalServerError,map[string]string{
@@ -438,6 +338,61 @@ func main() {
 		http.Redirect(w, req, "/", http.StatusFound)
 
 	})
+
+
+	m.Get("/authserver/auth/:user/:password", func(db *sql.DB, r render.Render, params martini.Params, req *http.Request) {
+
+		username, _ := lcrypto.Decrypt(params["user"])
+		password, _ := lcrypto.Decrypt(params["password"])
+
+
+		var bytePW = []byte(password)
+		user := authorization.User{username, password, "temp"}
+
+		userExists, accountID := authorization.UserExists(user, db)
+
+		if userExists{
+
+			isAuthorized := authorization.Authorize(accountID, bytePW,  db)
+
+			if isAuthorized{
+
+
+				char, err := authorization.GetCharacter(accountID, db)
+
+				if err != nil {
+					r.JSON(http.StatusOK, map[string]string{
+						"status":"nocharacter",
+					})
+				}else{
+
+					r.JSON(http.StatusOK, map[string]string{
+						"name": char.Name,
+						"charID": strconv.Itoa(char.ID),
+						"sector":strconv.Itoa(char.SectorID),
+						"x":strconv.FormatFloat(char.X, 'f', 4, 32),
+						"y":strconv.FormatFloat(char.Y, 'f', 4, 32),
+						"model":strconv.Itoa(char.Model),
+						"user": user.Username,
+						"id": strconv.Itoa(accountID),
+						"status":"ok",
+					})
+				}
+			}else{
+				r.JSON(http.StatusOK, map[string]string{
+					"status":"not-authorized",
+				})
+			}
+
+		}else{
+
+			r.JSON(http.StatusOK, map[string]string{
+				"status":"invalid-user",
+			})
+
+		}
+	})
+
 
 	http.ListenAndServe(":80", m)
 }
