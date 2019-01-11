@@ -321,6 +321,9 @@ func main() {
 			err := authorization.AddUser(user, db)
 
 			if err != nil{
+
+				fmt.Println(err)
+
 				r.JSON(http.StatusInternalServerError,map[string]string{
 					"type":   "registrationError",
 					"reason": "internal server error",
