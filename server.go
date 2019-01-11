@@ -77,6 +77,7 @@ func isVerified(req *http.Request, w http.ResponseWriter) bool{
 	auth := user.Authenticated
 
 	if auth == false{
+		session.Options.MaxAge = -1
 		err = session.Save(req, w)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -329,7 +330,6 @@ func main() {
 
 		session.Values["user"] = UserSession{}
 		session.Options.MaxAge = -1
-
 		err = session.Save(req, w)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
