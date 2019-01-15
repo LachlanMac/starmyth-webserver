@@ -11,6 +11,7 @@ import (
 	"encoding/gob"
 	"github.com/gorilla/sessions"
 	"github.com/martini-contrib/render"
+	"github.com/martini-contrib/secure"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/LachlanMac/authorization"
 	"github.com/LachlanMac/lcrypto"
@@ -107,6 +108,8 @@ func main() {
 
   	m.Map(db)
 
+	martini.Env = martini.Prod
+
   	helpers := template.FuncMap{
 		"print": fmt.Println,
 	}
@@ -121,14 +124,16 @@ func main() {
 		},
 	}))
 
+	m.Use(secure.Secure(secure.Options{
+		SSLRedirect: false,
+		SSLHost:     "localhost:8443",
+	}))
+
 	m.Use(func(req *http.Request) {
 		if !strings.HasSuffix(req.URL.Path, "/badrequest") && !strings.HasSuffix(req.URL.Path, "/ws/") && !strings.HasSuffix(req.URL.Path, "/favicon.ico") {
 
 		}
 	})
-
-
-
 
 
   	m.Get("/", func(db *sql.DB, r render.Render, req *http.Request, w http.ResponseWriter) {
@@ -407,7 +412,21 @@ func main() {
 	})
 
 
-	http.ListenAndServe(":80", m)
+	go func() {
+		if err := http.ListenAndServe(":80", m); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	if err := http.ListenAndServeTLS(":8443", "certification/cert.pem", "certification/key.pem", m); err != nil {
+		fmt.Println(err)
+	}
+
+
+
+
+
+
 }
 
 
