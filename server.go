@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"strings"
-	"strconv"
 	"net/http"
 	"encoding/gob"
 	"github.com/gorilla/sessions"
@@ -103,14 +102,16 @@ func main() {
 	ServerInit()
 
 	m := martini.Classic()
-  
+
 	db := SetupDB("/root/database/data.db")
 
-  	m.Map(db)
+
+
+	m.Map(db)
 
 	martini.Env = martini.Prod
 
-  	helpers := template.FuncMap{
+	helpers := template.FuncMap{
 		"print": fmt.Println,
 	}
 
@@ -136,13 +137,13 @@ func main() {
 	})
 
 
-  	m.Get("/", func(db *sql.DB, r render.Render, req *http.Request, w http.ResponseWriter) {
-	  hasSession := isVerified(req, w)
-	  newmap := map[string]interface{}{
-		  "hasSession" : hasSession,
-	  }
+	m.Get("/", func(db *sql.DB, r render.Render, req *http.Request, w http.ResponseWriter) {
+		hasSession := isVerified(req, w)
+		newmap := map[string]interface{}{
+			"hasSession" : hasSession,
+		}
 
-	  r.HTML(http.StatusOK, "html/pages/index", newmap)
+		r.HTML(http.StatusOK, "html/pages/index", newmap)
 
 	})
 
@@ -194,7 +195,7 @@ func main() {
 			"user" : username,
 			"email" : emailAddress,
 			"hasSession" : hasSession,
-		  }
+		}
 
 		r.HTML(http.StatusOK, "html/pages/registration", newmap)
 
@@ -358,6 +359,23 @@ func main() {
 	})
 
 
+	m.Get("/create-character/:name/:model", func(db *sql.DB, r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter){
+
+
+		charname := params["name"]
+		model := params["model"]
+
+
+		charNameExists, err := authorization.CharNameExists(charname, db)
+
+
+		fmt.Println(charNameExists, err, model)
+
+
+
+	})
+
+
 	m.Get("/authserver/auth/:user/:password", func(db *sql.DB, r render.Render, params martini.Params, req *http.Request) {
 
 		username, _ := lcrypto.Decrypt(params["user"])
@@ -376,7 +394,7 @@ func main() {
 			if isAuthorized{
 
 
-				char, err := authorization.GetCharacter(accountID, db)
+				chars, err := authorization.GetCharacters(accountID, db)
 
 				if err != nil {
 					r.JSON(http.StatusOK, map[string]string{
@@ -384,17 +402,21 @@ func main() {
 					})
 				}else{
 
-					r.JSON(http.StatusOK, map[string]string{
-						"name": char.Name,
-						"charID": strconv.Itoa(char.ID),
-						"sector":strconv.Itoa(char.SectorID),
-						"x":strconv.FormatFloat(char.X, 'f', 4, 32),
-						"y":strconv.FormatFloat(char.Y, 'f', 4, 32),
-						"model":strconv.Itoa(char.Model),
-						"user": user.Username,
-						"id": strconv.Itoa(accountID),
-						"status":"ok",
-					})
+
+					fmt.Println(chars)
+
+
+					//r.JSON(http.StatusOK, map[string]string{
+					//		"name": char.Name,
+					//		"charID": strconv.Itoa(char.ID),
+					//		"sector":strconv.Itoa(char.SectorID),
+					//		"x":strconv.FormatFloat(char.X, 'f', 4, 32),
+					//		"y":strconv.FormatFloat(char.Y, 'f', 4, 32),
+					//		"model":strconv.Itoa(char.Model),
+					//		"user": user.Username,
+					//		"id": strconv.Itoa(accountID),
+					//		"status":"ok",
+					//	})
 				}
 			}else{
 				r.JSON(http.StatusOK, map[string]string{
@@ -411,24 +433,10 @@ func main() {
 		}
 	})
 
-
-	go func() {
-		if err := http.ListenAndServe(":80", m); err != nil {
-			fmt.Println(err)
-		}
-	}()
-
-	if err := http.ListenAndServeTLS(":8443", "certification/cert.pem", "certification/key.pem", m); err != nil {
-		fmt.Println(err)
-	}
-
-
+	http.ListenAndServe(":80", m)
 
 
 
 
 }
-
-
-
 
