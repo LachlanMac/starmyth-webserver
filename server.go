@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"strings"
+	"strconv"
 	"net/http"
 	"encoding/gob"
 	"github.com/gorilla/sessions"
@@ -368,7 +369,7 @@ func main() {
 		charNameExists, err := authorization.CharNameExists(charname, db)
 
 		if charNameExists == false && err == nil {
-			err := authorization.AddCharacter(accountID, charname, model,  db)
+			err := authorization.AddCharacter(strconv.Atoa(accountID), charname, model,  db)
 
 
 			if err == nil {
