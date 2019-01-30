@@ -369,7 +369,11 @@ func main() {
 		charNameExists, err := authorization.CharNameExists(charname, db)
 
 		if charNameExists == false && err == nil {
-			err := authorization.AddCharacter(strconv.Atoi(accountID), charname, model,  db)
+
+
+			id, _ := strconv.Atoi(accountID)
+
+			err := authorization.AddCharacter(id, charname, model,  db)
 
 
 			if err == nil {
