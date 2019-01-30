@@ -426,6 +426,7 @@ func main() {
 
 						r.JSON(http.StatusOK, map[string]string{
 							"status":"nocharacter",
+							"account_id":strconv.Itoa(accountID),
 						})
 
 					}else if len(chars) == 1{
@@ -440,6 +441,7 @@ func main() {
 								"user1": user.Username,
 								"id1": strconv.Itoa(accountID),
 								"status1":"ok",
+								"account_id":strconv.Itoa(accountID),
 							})
 					}else if len(chars) == 2{
 
@@ -462,6 +464,7 @@ func main() {
 							"user2": user.Username,
 							"id2": strconv.Itoa(accountID),
 							"status2":"ok",
+							"account_id":strconv.Itoa(accountID),
 						})
 
 					}else if len(chars) == 3{
@@ -493,6 +496,7 @@ func main() {
 							"user3": user.Username,
 							"id3": strconv.Itoa(accountID),
 							"status3":"ok",
+							"account_id":strconv.Itoa(accountID),
 						})
 
 					}else if len(chars) == 4{
@@ -533,6 +537,7 @@ func main() {
 							"user4": user.Username,
 							"id4": strconv.Itoa(accountID),
 							"status4":"ok",
+							"account_id":strconv.Itoa(accountID),
 						})
 
 
