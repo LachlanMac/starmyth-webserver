@@ -359,19 +359,33 @@ func main() {
 	})
 
 
-	m.Get("/create-character/:name/:model", func(db *sql.DB, r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter){
+	m.Get("/create-character/:id/:name/:model", func(db *sql.DB, r render.Render, params martini.Params, req *http.Request, w http.ResponseWriter){
 
-
+		accountID := params["id"]
 		charname := params["name"]
 		model := params["model"]
 
-
 		charNameExists, err := authorization.CharNameExists(charname, db)
 
+		if charNameExists == false && err == nil {
+			err := authorization.AddCharacter(accountID, charname, model,  db)
 
-		fmt.Println(charNameExists, err, model)
 
+			if err == nil {
+				r.JSON(http.StatusOK, map[string]string{
+					"status": "success",
+				})
+			}else{
+				r.JSON(http.StatusOK, map[string]string{
+					"status": "failed",
+				})
+			}
+		}else{
+			r.JSON(http.StatusOK, map[string]string{
+				"status": "charnameexists",
+			})
 
+		}
 
 	})
 
