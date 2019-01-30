@@ -417,25 +417,131 @@ func main() {
 
 				if err != nil {
 					r.JSON(http.StatusOK, map[string]string{
-						"status":"nocharacter",
+						"status":"error",
 					})
 				}else{
 
 
-					fmt.Println(chars)
+					if len(chars) == 0 {
+
+						r.JSON(http.StatusOK, map[string]string{
+							"status":"nocharacter",
+						})
+
+					}else if len(chars) == 1{
+
+						r.JSON(http.StatusOK, map[string]string{
+								"name1": chars[0].Name,
+								"charID1": strconv.Itoa(chars[0].ID),
+								"sector1":strconv.Itoa(chars[0].SectorID),
+								"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
+								"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
+								"model1":strconv.Itoa(chars[0].Model),
+								"user1": user.Username,
+								"id1": strconv.Itoa(accountID),
+								"status1":"ok",
+							})
+					}else if len(chars) == 2{
+
+						r.JSON(http.StatusOK, map[string]string{
+							"name1": chars[0].Name,
+							"charID1": strconv.Itoa(chars[0].ID),
+							"sector1":strconv.Itoa(chars[0].SectorID),
+							"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
+							"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
+							"model1":strconv.Itoa(chars[0].Model),
+							"user1": user.Username,
+							"id1": strconv.Itoa(accountID),
+							"status1":"ok",
+							"name2": chars[1].Name,
+							"charID2": strconv.Itoa(chars[1].ID),
+							"sector2":strconv.Itoa(chars[1].SectorID),
+							"x2":strconv.FormatFloat(chars[1].X, 'f', 4, 32),
+							"y2":strconv.FormatFloat(chars[1].Y, 'f', 4, 32),
+							"model2":strconv.Itoa(chars[1].Model),
+							"user2": user.Username,
+							"id2": strconv.Itoa(accountID),
+							"status2":"ok",
+						})
+
+					}else if len(chars) == 3{
+						r.JSON(http.StatusOK, map[string]string{
+							"name1": chars[0].Name,
+							"charID1": strconv.Itoa(chars[0].ID),
+							"sector1":strconv.Itoa(chars[0].SectorID),
+							"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
+							"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
+							"model1":strconv.Itoa(chars[0].Model),
+							"user1": user.Username,
+							"id1": strconv.Itoa(accountID),
+							"status1":"ok",
+							"name2": chars[1].Name,
+							"charID2": strconv.Itoa(chars[1].ID),
+							"sector2":strconv.Itoa(chars[1].SectorID),
+							"x2":strconv.FormatFloat(chars[1].X, 'f', 4, 32),
+							"y2":strconv.FormatFloat(chars[1].Y, 'f', 4, 32),
+							"model2":strconv.Itoa(chars[1].Model),
+							"user2": user.Username,
+							"id2": strconv.Itoa(accountID),
+							"status2":"ok",
+							"name3": chars[2].Name,
+							"charID3": strconv.Itoa(chars[2].ID),
+							"sector3":strconv.Itoa(chars[2].SectorID),
+							"x3":strconv.FormatFloat(chars[2].X, 'f', 4, 32),
+							"y3":strconv.FormatFloat(chars[2].Y, 'f', 4, 32),
+							"model3":strconv.Itoa(chars[2].Model),
+							"user3": user.Username,
+							"id3": strconv.Itoa(accountID),
+							"status3":"ok",
+						})
+
+					}else if len(chars) == 4{
+						r.JSON(http.StatusOK, map[string]string{
+							"name1": chars[0].Name,
+							"charID1": strconv.Itoa(chars[0].ID),
+							"sector1":strconv.Itoa(chars[0].SectorID),
+							"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
+							"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
+							"model1":strconv.Itoa(chars[0].Model),
+							"user1": user.Username,
+							"id1": strconv.Itoa(accountID),
+							"status1":"ok",
+							"name2": chars[1].Name,
+							"charID2": strconv.Itoa(chars[1].ID),
+							"sector2":strconv.Itoa(chars[1].SectorID),
+							"x2":strconv.FormatFloat(chars[1].X, 'f', 4, 32),
+							"y2":strconv.FormatFloat(chars[1].Y, 'f', 4, 32),
+							"model2":strconv.Itoa(chars[1].Model),
+							"user2": user.Username,
+							"id2": strconv.Itoa(accountID),
+							"status2":"ok",
+							"name3": chars[2].Name,
+							"charID3": strconv.Itoa(chars[2].ID),
+							"sector3":strconv.Itoa(chars[2].SectorID),
+							"x3":strconv.FormatFloat(chars[2].X, 'f', 4, 32),
+							"y3":strconv.FormatFloat(chars[2].Y, 'f', 4, 32),
+							"model3":strconv.Itoa(chars[2].Model),
+							"user3": user.Username,
+							"id3": strconv.Itoa(accountID),
+							"status3":"ok",
+							"name4": chars[3].Name,
+							"charID4": strconv.Itoa(chars[3].ID),
+							"sector4":strconv.Itoa(chars[3].SectorID),
+							"x4":strconv.FormatFloat(chars[3].X, 'f', 4, 32),
+							"y4":strconv.FormatFloat(chars[3].Y, 'f', 4, 32),
+							"model4":strconv.Itoa(chars[3].Model),
+							"user4": user.Username,
+							"id4": strconv.Itoa(accountID),
+							"status4":"ok",
+						})
 
 
-					//r.JSON(http.StatusOK, map[string]string{
-					//		"name": char.Name,
-					//		"charID": strconv.Itoa(char.ID),
-					//		"sector":strconv.Itoa(char.SectorID),
-					//		"x":strconv.FormatFloat(char.X, 'f', 4, 32),
-					//		"y":strconv.FormatFloat(char.Y, 'f', 4, 32),
-					//		"model":strconv.Itoa(char.Model),
-					//		"user": user.Username,
-					//		"id": strconv.Itoa(accountID),
-					//		"status":"ok",
-					//	})
+					}else{
+						r.JSON(http.StatusOK, map[string]string{
+							"status":"servererror",
+						})
+					}
+
 				}
 			}else{
 				r.JSON(http.StatusOK, map[string]string{
