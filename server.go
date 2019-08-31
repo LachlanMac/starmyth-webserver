@@ -248,7 +248,7 @@ func main() {
 		header.Add("Content-Type", "application/octet-stream")
 		header.Add("Content-Disposition", "attachment; filename=\"test.txt\"")
 
-		http.ServeFile(w, req, "/Users/lachlanmccallum/Documents/Starmyth/starmyth-webserver/public/html/files/test.txt")
+		http.ServeFile(w, req, "/home/lachlan/Starmyth/client/client.zip")
 
 	})
 
