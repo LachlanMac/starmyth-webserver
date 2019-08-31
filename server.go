@@ -246,7 +246,7 @@ func main() {
 
 		header := w.Header()
 		header.Add("Content-Type", "application/octet-stream")
-		header.Add("Content-Disposition", "attachment; filename=\"test.txt\"")
+		header.Add("Content-Disposition", "attachment; filename=\"client.zip\"")
 
 		http.ServeFile(w, req, "/home/lachlan/Starmyth/client/client.zip")
 
