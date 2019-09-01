@@ -38,6 +38,9 @@ type Character struct {
 	Y        float64
 	SectorID int
 	Model    string
+	Layer    int
+	Faction  int
+	Structure int
 }
 
 
@@ -445,142 +448,25 @@ func main() {
 
 			if isAuthorized{
 
-
-				chars, err := GetCharacters(accountID, db)
-
-				if err != nil {
-					r.JSON(http.StatusOK, map[string]string{
-						"status":"error",
-					})
-				}else{
-
-
-					if len(chars) == 0 {
-
-						r.JSON(http.StatusOK, map[string]string{
-							"status":"nocharacter",
-							"account_id":strconv.Itoa(accountID),
-						})
-
-					}else if len(chars) == 1{
-
-						r.JSON(http.StatusOK, map[string]string{
-								"name1": chars[0].Name,
-								"charID1": strconv.Itoa(chars[0].ID),
-								"sector1":strconv.Itoa(chars[0].SectorID),
-								"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
-								"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
-								"model1":chars[0].Model,
-								"user1": user.Username,
-								"id1": strconv.Itoa(accountID),
-								"status1":"ok",
-								"account_id":strconv.Itoa(accountID),
-							})
-					}else if len(chars) == 2{
-
-						r.JSON(http.StatusOK, map[string]string{
-							"name1": chars[0].Name,
-							"charID1": strconv.Itoa(chars[0].ID),
-							"sector1":strconv.Itoa(chars[0].SectorID),
-							"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
-							"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
-							"model1":chars[0].Model,
-							"user1": user.Username,
-							"id1": strconv.Itoa(accountID),
-							"status1":"ok",
-							"name2": chars[1].Name,
-							"charID2": strconv.Itoa(chars[1].ID),
-							"sector2":strconv.Itoa(chars[1].SectorID),
-							"x2":strconv.FormatFloat(chars[1].X, 'f', 4, 32),
-							"y2":strconv.FormatFloat(chars[1].Y, 'f', 4, 32),
-							"model2":chars[1].Model,
-							"user2": user.Username,
-							"id2": strconv.Itoa(accountID),
-							"status2":"ok",
-							"account_id":strconv.Itoa(accountID),
-						})
-
-					}else if len(chars) == 3{
-						r.JSON(http.StatusOK, map[string]string{
-							"name1": chars[0].Name,
-							"charID1": strconv.Itoa(chars[0].ID),
-							"sector1":strconv.Itoa(chars[0].SectorID),
-							"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
-							"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
-							"model1":chars[0].Model,
-							"user1": user.Username,
-							"id1": strconv.Itoa(accountID),
-							"status1":"ok",
-							"name2": chars[1].Name,
-							"charID2": strconv.Itoa(chars[1].ID),
-							"sector2":strconv.Itoa(chars[1].SectorID),
-							"x2":strconv.FormatFloat(chars[1].X, 'f', 4, 32),
-							"y2":strconv.FormatFloat(chars[1].Y, 'f', 4, 32),
-							"model2":chars[1].Model,
-							"user2": user.Username,
-							"id2": strconv.Itoa(accountID),
-							"status2":"ok",
-							"name3": chars[2].Name,
-							"charID3": strconv.Itoa(chars[2].ID),
-							"sector3":strconv.Itoa(chars[2].SectorID),
-							"x3":strconv.FormatFloat(chars[2].X, 'f', 4, 32),
-							"y3":strconv.FormatFloat(chars[2].Y, 'f', 4, 32),
-							"model3":chars[2].Model,
-							"user3": user.Username,
-							"id3": strconv.Itoa(accountID),
-							"status3":"ok",
-							"account_id":strconv.Itoa(accountID),
-						})
-
-					}else if len(chars) == 4{
-						r.JSON(http.StatusOK, map[string]string{
-							"name1": chars[0].Name,
-							"charID1": strconv.Itoa(chars[0].ID),
-							"sector1":strconv.Itoa(chars[0].SectorID),
-							"x1":strconv.FormatFloat(chars[0].X, 'f', 4, 32),
-							"y1":strconv.FormatFloat(chars[0].Y, 'f', 4, 32),
-							"model1":chars[0].Model,
-							"user1": user.Username,
-							"id1": strconv.Itoa(accountID),
-							"status1":"ok",
-							"name2": chars[1].Name,
-							"charID2": strconv.Itoa(chars[1].ID),
-							"sector2":strconv.Itoa(chars[1].SectorID),
-							"x2":strconv.FormatFloat(chars[1].X, 'f', 4, 32),
-							"y2":strconv.FormatFloat(chars[1].Y, 'f', 4, 32),
-							"model2":chars[1].Model,
-							"user2": user.Username,
-							"id2": strconv.Itoa(accountID),
-							"status2":"ok",
-							"name3": chars[2].Name,
-							"charID3": strconv.Itoa(chars[2].ID),
-							"sector3":strconv.Itoa(chars[2].SectorID),
-							"x3":strconv.FormatFloat(chars[2].X, 'f', 4, 32),
-							"y3":strconv.FormatFloat(chars[2].Y, 'f', 4, 32),
-							"model3":chars[2].Model,
-							"user3": user.Username,
-							"id3": strconv.Itoa(accountID),
-							"status3":"ok",
-							"name4": chars[3].Name,
-							"charID4": strconv.Itoa(chars[3].ID),
-							"sector4":strconv.Itoa(chars[3].SectorID),
-							"x4":strconv.FormatFloat(chars[3].X, 'f', 4, 32),
-							"y4":strconv.FormatFloat(chars[3].Y, 'f', 4, 32),
-							"model4":chars[3].Model,
-							"user4": user.Username,
-							"id4": strconv.Itoa(accountID),
-							"status4":"ok",
-							"account_id":strconv.Itoa(accountID),
-						})
-
-
-					}else{
-						r.JSON(http.StatusOK, map[string]string{
-							"status":"servererror",
-						})
-					}
-
+				char, err := GetCharacter(accountID, db)
+				if err != nil{
+					fmt.Println("Error Getting Character", err)
 				}
+
+				r.JSON(http.StatusOK, map[string]string{
+					"charid":strconv.Itoa(char.ID),
+					"name":char.Name,
+					"x":strconv.FormatFloat(char.X, 'f', 4, 64),
+					"y":strconv.FormatFloat(char.Y, 'f', 4, 64),
+					"sector":strconv.Itoa(char.SectorID),
+					"model":char.Model,
+					"layer":strconv.Itoa(char.Layer),
+					"faction":strconv.Itoa(char.Faction),
+					"structure":strconv.Itoa(char.Structure),
+
+				})
+
+
 			}else{
 				r.JSON(http.StatusOK, map[string]string{
 					"status":"not-authorized",
@@ -634,19 +520,21 @@ func CharNameExists(charName string,  db *sql.DB) (bool, error){
 
 }
 
-func AddCharacter(account_id int, character_name string, model string,  db *sql.DB) (error){
+func AddCharacter(account_id int, character_name string, model string,  db *sql.DB) (error) {
 
-	sqlStatement := `INSERT INTO characters (account_id, character_name, character_model, x_pos, y_pos, sector_id)VALUES ($1, $2, $3, $4, $5, $6)`
-	_, err := db.Exec(sqlStatement, account_id, character_name, model, 2000, 2000, 27422)
+	sqlStatement := `INSERT INTO PlayerCharacter (account_id, character_name, character_model, local_x, local_y, sector_id, layer, faction_id, structure_id)VALUES (?,?,?,?,?,?,?,?,?)`
+	_, err := db.Exec(sqlStatement, account_id, character_name, model, 4000, 4000, 7780, 1,1,1001)
 
+	fmt.Println("error Addking character", err)
 	return err
 
 }
 
-func GetCharacters(account_id int, db *sql.DB) ([]Character, error){
+
+func GetCharacter(account_id int, db *sql.DB) (Character, error){
 
 
-	sqlStatement := `SELECT character_id, character_name, character_model, x_pos, y_pos, sector_id FROM characters WHERE account_id=$1`
+	sqlStatement := `SELECT character_id, character_name, character_model, local_x, local_y, sector_id, layer, faction_id, structure_id FROM PlayerCharacter WHERE account_id=?`
 
 	rows, err := db.Query(sqlStatement, account_id)
 	if err != nil {
@@ -654,9 +542,7 @@ func GetCharacters(account_id int, db *sql.DB) ([]Character, error){
 	}
 	defer rows.Close()
 
-
-	var characters []Character
-
+	var char Character
 
 	for rows.Next(){
 
@@ -666,16 +552,19 @@ func GetCharacters(account_id int, db *sql.DB) ([]Character, error){
 		var y float64
 		var secId int
 		var model string
+		var layer int
+		var faction int
+		var structure int
 
 
-		err := rows.Scan(&id, &name, &model, &x, &y, &secId)
+		err := rows.Scan(&id, &name, &model, &x, &y, &secId, &layer, &faction, &structure)
 
 		if err == nil{
 
 
-			char := Character{id, name, x, y, secId, model}
+			char = Character{id, name, x, y, secId, model, layer, faction, structure}
 
-			characters = append(characters, char)
+
 
 		}else{
 
@@ -684,7 +573,7 @@ func GetCharacters(account_id int, db *sql.DB) ([]Character, error){
 
 	}
 
-	return characters, err
+	return char, err
 
 }
 
@@ -694,8 +583,40 @@ func AddUser(user User, db *sql.DB) error{
 	sqlStatement := `INSERT INTO Account (username, email, password, joindate, status)VALUES (?, ?, ?,  current_timestamp(), 1)`
 	_, err := db.Exec(sqlStatement, user.Username, user.Email, user.Password)
 
+
+
+	accountID, err := GetAccountID(user, db)
+
+	if err == nil{
+		fmt.Println("adding default character")
+		AddCharacter(accountID, user.Username, "ffffeeee00002222", db)
+
+	}
+
 	return err
 }
+
+func GetAccountID(user User, db *sql.DB) (int, error){
+
+	var account_id int
+	sqlStatement := `SELECT account_id FROM Account WHERE username=?`
+	row := db.QueryRow(sqlStatement, user.Username)
+
+	err := row.Scan(&account_id)
+
+	if err == sql.ErrNoRows {
+		return 0, err
+	}else if err != nil {
+		fmt.Println("Uncaught Server error when attempting to check if an Email Address exists", err)
+		return 0, err
+	}else{
+		return account_id, err
+	}
+
+
+}
+
+
 
 
 func GetUniqueIdentifier(username string) string {
